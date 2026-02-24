@@ -1,0 +1,21 @@
+# Node / backend
+node_modules/
+dist/
+.env
+npm-debug.log*
+yarn-debug.log*
+
+# Frontend / React
+build/
+dist/
+.env.local
+.cache/
+
+# Database
+*.sqlite
+*.db
+
+# IDE / OS
+.vscode/
+.DS_Store
+Thumbs.db
