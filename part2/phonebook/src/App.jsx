@@ -37,9 +37,11 @@ const App = () => {
       number: newNumber,
       id: Math.max(...persons.map(({ id }) => id)) + 1,
     };
-    setPersons([...persons, newPerson]);
-    setNewName("");
-    setNewNumber("");
+    axios.post(PERSONS_URL, newPerson).then((response) => {
+      setPersons([...persons, response.data]);
+      setNewName("");
+      setNewNumber("");
+    });
   };
 
   const personsToShow = persons.filter((p) =>
