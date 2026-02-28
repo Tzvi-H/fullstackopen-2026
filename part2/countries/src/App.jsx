@@ -47,10 +47,24 @@ const Countries = ({ countries, setSelectedCountry, countryToShow }) => {
   }
 };
 
+const CountryWeather = ({ weatherInfo }) => {
+  return (
+    <div>
+      <h2>Weather in {weatherInfo.name}</h2>
+      <p>Temperature {weatherInfo.main.temp} Celsius</p>
+      <img
+        src={`https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png`}
+      />
+      <p>Wind {weatherInfo.wind.speed} m/s</p>
+    </div>
+  );
+};
+
 const App = () => {
   const [countryInput, setCountryInput] = useState("");
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [weatherInfo, setWeatherInfo] = useState(null);
 
   useEffect(() => {
     axios.get(COUNTRIES_URL).then((response) => {
@@ -61,6 +75,7 @@ const App = () => {
   const handleCountryChange = (e) => {
     setCountryInput(e.target.value);
     setSelectedCountry(null);
+    setWeatherInfo(null);
   };
 
   const matchedCountries = countries.filter((country) =>
@@ -73,6 +88,16 @@ const App = () => {
   } else if (selectedCountry) {
     countryToShow = selectedCountry;
   }
+
+  useEffect(() => {
+    if (countryToShow) {
+      axios
+        .get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${countryToShow.capital[0]}&appid=${import.meta.env.VITE_WEATHER_API_KEY}&units=metric`,
+        )
+        .then((response) => setWeatherInfo(response.data));
+    }
+  }, [countryToShow]);
 
   return (
     <div>
@@ -87,6 +112,7 @@ const App = () => {
           countryToShow={countryToShow}
         />
       )}
+      {weatherInfo && <CountryWeather weatherInfo={weatherInfo} />}
     </div>
   );
 };
