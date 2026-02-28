@@ -1,11 +1,10 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
+
+import personService from "./services/persons";
 
 import SearchFilter from "./components/SearchFilter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-
-const PERSONS_URL = "http://localhost:3001/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -15,9 +14,9 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    axios.get(PERSONS_URL).then((response) => {
-      setPersons(response.data);
-    });
+    const p = personService.getAll();
+    console.log(p);
+    p.then((persons) => setPersons(persons));
   }, []);
 
   const handleNameChange = (e) => setNewName(e.target.value);
@@ -37,8 +36,8 @@ const App = () => {
       number: newNumber,
       id: Math.max(...persons.map(({ id }) => id)) + 1,
     };
-    axios.post(PERSONS_URL, newPerson).then((response) => {
-      setPersons([...persons, response.data]);
+    personService.create(newPerson).then((createdPerson) => {
+      setPersons([...persons, createdPerson]);
       setNewName("");
       setNewNumber("");
     });
