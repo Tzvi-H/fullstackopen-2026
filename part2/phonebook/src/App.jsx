@@ -5,6 +5,7 @@ import personService from "./services/persons";
 import SearchFilter from "./components/SearchFilter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,6 +13,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     const p = personService.getAll();
@@ -37,6 +39,8 @@ const App = () => {
           setPersons(
             persons.map((p) => (p.id !== createdPerson.id ? p : createdPerson)),
           );
+          setNotification({ message: `Updated ${newName}`, type: "success" });
+          setTimeout(() => setNotification(null), 4000);
           setNewName("");
           setNewNumber("");
         });
@@ -50,6 +54,8 @@ const App = () => {
     };
     personService.create(newPerson).then((createdPerson) => {
       setPersons([...persons, createdPerson]);
+      setNotification({ message: `Added ${newName}`, type: "success" });
+      setTimeout(() => setNotification(null), 4000);
       setNewName("");
       setNewNumber("");
     });
@@ -59,7 +65,15 @@ const App = () => {
     if (confirm(`Delete ${name}?`)) {
       personService
         .remove(id)
-        .then(() => setPersons(persons.filter((p) => p.id !== id)));
+        .then(() => {
+          setPersons(persons.filter((p) => p.id !== id));
+          setNotification({ message: `Deleted ${name}`, type: "success" });
+          setTimeout(() => setNotification(null), 4000);
+        })
+        .catch((e) => {
+          setNotification({ message: e.message, type: "error" });
+          setTimeout(() => setNotification(null), 4000);
+        });
     }
   };
 
@@ -70,6 +84,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification} />
       <SearchFilter filter={filter} handleFilterChange={handleFilterChange} />
 
       <h2>Add a new</h2>
