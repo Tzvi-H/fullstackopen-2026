@@ -25,15 +25,28 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+    const existingPerson = persons.find((person) => person.name === newName);
+    if (existingPerson) {
+      if (
+        confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`,
+        )
+      ) {
+        const personToUpdate = { ...existingPerson, number: newNumber };
+        personService.update(personToUpdate).then((createdPerson) => {
+          setPersons(
+            persons.map((p) => (p.id !== createdPerson.id ? p : createdPerson)),
+          );
+          setNewName("");
+          setNewNumber("");
+        });
+      }
       return;
     }
 
     const newPerson = {
       name: newName,
       number: newNumber,
-      // id: String(Math.max(...persons.map(({ id }) => id)) + 1),
     };
     personService.create(newPerson).then((createdPerson) => {
       setPersons([...persons, createdPerson]);
