@@ -15,7 +15,6 @@ const App = () => {
 
   useEffect(() => {
     const p = personService.getAll();
-    console.log(p);
     p.then((persons) => setPersons(persons));
   }, []);
 
@@ -34,13 +33,21 @@ const App = () => {
     const newPerson = {
       name: newName,
       number: newNumber,
-      id: Math.max(...persons.map(({ id }) => id)) + 1,
+      // id: String(Math.max(...persons.map(({ id }) => id)) + 1),
     };
     personService.create(newPerson).then((createdPerson) => {
       setPersons([...persons, createdPerson]);
       setNewName("");
       setNewNumber("");
     });
+  };
+
+  const handleDelete = (id, name) => {
+    if (confirm(`Delete ${name}?`)) {
+      personService
+        .remove(id)
+        .then(() => setPersons(persons.filter((p) => p.id !== id)));
+    }
   };
 
   const personsToShow = persons.filter((p) =>
@@ -62,7 +69,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} onDelete={handleDelete} />
     </div>
   );
 };
