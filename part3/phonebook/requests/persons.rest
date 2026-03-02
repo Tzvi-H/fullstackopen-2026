@@ -5,10 +5,19 @@ GET http://localhost:3001/info
 GET http://localhost:3001/api/persons
 
 ### GET 1 person
-GET http://localhost:3001/api/persons/1
+GET http://localhost:3001/api/persons/15091
 
 ### GET non existing person
 GET http://localhost:3001/api/persons/343243
+
+### POST a new person
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "vscode rest",
+    "number": "123-382929"
+}
 
 ### DELETE 1 person
 DELETE  http://localhost:3001/api/persons/1
