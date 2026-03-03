@@ -1,7 +1,15 @@
+const morgan = require("morgan");
 const express = require("express");
 const app = express();
 
 app.use(express.json());
+
+morgan.token("body", function (req) {
+  return JSON.stringify(req.body);
+});
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :body"),
+);
 
 let persons = [
   {
@@ -77,6 +85,12 @@ app.delete("/api/persons/:id", (req, res) => {
   } else {
     res.status(404).end();
   }
+});
+
+app.use((req, res) => {
+  res.status(404).json({
+    error: "unknown endpoint",
+  });
 });
 
 app.listen(3001, () => console.log("phonebook listening on port 3001"));
