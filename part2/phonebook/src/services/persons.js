@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const PERSONS_URL = "http://localhost:3001/api/persons";
+const PERSONS_URL = "https://fullstackopen-2026.onrender.com/api/persons";
 
 const getAll = () => {
   return axios.get(PERSONS_URL).then((response) => response.data);
