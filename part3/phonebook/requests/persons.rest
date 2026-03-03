@@ -19,5 +19,30 @@ Content-Type: application/json
     "number": "123-382929"
 }
 
+### POST a person without a name
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "number": "123-382929"
+}
+
+### POST a person without a number
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "vscode rest"
+}
+
+### POST a person who already exists
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Arto Hellas",
+    "number": "123-382929"
+}
+
 ### DELETE 1 person
 DELETE  http://localhost:3001/api/persons/1
