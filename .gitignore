@@ -1,13 +1,11 @@
 # Node / backend
 node_modules/
-dist/
 .env
 npm-debug.log*
 yarn-debug.log*
 
 # Frontend / React
 build/
-dist/
 .env.local
 .cache/
 
