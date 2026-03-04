@@ -57,16 +57,25 @@ app.post("/api/persons", (req, res) => {
   newPerson.save().then((result) => res.json(result));
 });
 
-app.delete("/api/persons/:id", (req, res) => {
-  Person.findByIdAndDelete(req.params.id).then((result) =>
-    res.status(204).end(),
-  );
+app.delete("/api/persons/:id", (req, res, next) => {
+  Person.findByIdAndDelete(req.params.id)
+    .then((result) => res.status(204).end())
+    .catch((e) => next(e));
 });
 
 app.use((req, res) => {
   res.status(404).json({
     error: "unknown endpoint",
   });
+});
+
+app.use((error, req, res, next) => {
+  if (error.name === "CastError") {
+    console.log(error);
+    return res.status(400).json({ error: "malformatted id" });
+  }
+
+  next();
 });
 
 app.listen(PORT, () => console.log(`phonebook listening on port ${PORT}`));
