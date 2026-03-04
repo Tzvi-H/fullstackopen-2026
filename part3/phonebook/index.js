@@ -48,19 +48,13 @@ app.post("/api/persons", (req, res) => {
     return res.status(400).json({
       error: "number missing",
     });
-  } else if (persons.some((p) => p.name === req.body.name)) {
-    return res.status(400).json({
-      error: "person already exists",
-    });
   }
 
-  const newPerson = {
+  const newPerson = new Person({
     name: req.body.name,
     number: req.body.number,
-    id: String(Math.floor(Math.random() * 100000)),
-  };
-  persons.push(newPerson);
-  res.json(newPerson);
+  });
+  newPerson.save().then((result) => res.json(result));
 });
 
 app.delete("/api/persons/:id", (req, res) => {
