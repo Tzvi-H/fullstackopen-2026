@@ -57,6 +57,20 @@ app.post("/api/persons", (req, res) => {
   newPerson.save().then((result) => res.json(result));
 });
 
+app.put("/api/persons/:id", (req, res, next) => {
+  Person.findById(req.params.id).then((person) => {
+    if (!person) {
+      return res.status(404).send({ error: "unknown endpoint" });
+    }
+
+    person.number = req.body.number;
+    person
+      .save()
+      .then((result) => res.json(result))
+      .catch((e) => next(e));
+  });
+});
+
 app.delete("/api/persons/:id", (req, res, next) => {
   Person.findByIdAndDelete(req.params.id)
     .then((result) => res.status(204).end())
