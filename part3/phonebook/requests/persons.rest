@@ -5,7 +5,7 @@ GET http://localhost:3001/info
 GET http://localhost:3001/api/persons
 
 ### GET 1 person
-GET http://localhost:3001/api/persons/15091
+GET http://localhost:3001/api/persons/69a7fb972e347a07ff3929da
 
 ### GET non existing person
 GET http://localhost:3001/api/persons/343243
@@ -15,7 +15,7 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "vscode rest",
+    "name": "hello",
     "number": "123-382929"
 }
 

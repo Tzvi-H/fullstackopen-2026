@@ -21,22 +21,27 @@ app.use(
 );
 
 app.get("/info", (req, res) => {
-  res.send(`
-        Phonebook has info for ${persons.length} people <br />
+  Person.countDocuments({}).then((count) => {
+    res.send(`
+        Phonebook has info for ${count} people <br />
         ${new Date().toString()}`);
+  });
 });
 
 app.get("/api/persons", (req, res) => {
   Person.find({}).then((result) => res.json(result));
 });
 
-app.get("/api/persons/:id", (req, res) => {
-  const person = persons.find((p) => p.id === req.params.id);
-  if (person) {
-    res.json(person);
-  } else {
-    res.status(404).end();
-  }
+app.get("/api/persons/:id", (req, res, next) => {
+  Person.findById(req.params.id)
+    .then((person) => {
+      if (!person) {
+        return res.status(404).json({ error: "unknown endpoint" });
+      }
+
+      res.json(person);
+    })
+    .catch((e) => next(e));
 });
 
 app.post("/api/persons", (req, res) => {
