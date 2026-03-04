@@ -58,13 +58,9 @@ app.post("/api/persons", (req, res) => {
 });
 
 app.delete("/api/persons/:id", (req, res) => {
-  const person = persons.find((p) => p.id === req.params.id);
-  if (person) {
-    persons = persons.filter((p) => p.id !== req.params.id);
-    res.status(204).end();
-  } else {
-    res.status(404).end();
-  }
+  Person.findByIdAndDelete(req.params.id).then((result) =>
+    res.status(204).end(),
+  );
 });
 
 app.use((req, res) => {

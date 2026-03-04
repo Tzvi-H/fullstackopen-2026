@@ -45,7 +45,7 @@ Content-Type: application/json
 }
 
 ### DELETE 1 person
-DELETE  http://localhost:3001/api/persons/1
+DELETE  http://localhost:3001/api/persons/69a7e5eea86163bba95cd76a
 
 ### GET unknown endpoint
 GET http://localhost:3001/api/foo
