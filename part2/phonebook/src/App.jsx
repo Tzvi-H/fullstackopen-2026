@@ -52,13 +52,20 @@ const App = () => {
       name: newName,
       number: newNumber,
     };
-    personService.create(newPerson).then((createdPerson) => {
-      setPersons([...persons, createdPerson]);
-      setNotification({ message: `Added ${newName}`, type: "success" });
-      setTimeout(() => setNotification(null), 4000);
-      setNewName("");
-      setNewNumber("");
-    });
+    personService
+      .create(newPerson)
+      .then((createdPerson) => {
+        setPersons([...persons, createdPerson]);
+        setNotification({ message: `Added ${newName}`, type: "success" });
+        setTimeout(() => setNotification(null), 4000);
+        setNewName("");
+        setNewNumber("");
+      })
+      .catch((error) => {
+        setNotification({ message: error.response.data.error, type: "error" });
+        setTimeout(() => setNotification(null), 4000);
+        console.log(error.response.data.error);
+      });
   };
 
   const handleDelete = (id, name) => {

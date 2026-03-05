@@ -27,6 +27,15 @@ Content-Type: application/json
     "number": "123-382929"
 }
 
+### POST a person with a name too short
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "number": "123-382929",
+    "name": "ab"
+}
+
 ### POST a person without a number
 POST http://localhost:3001/api/persons
 Content-Type: application/json
