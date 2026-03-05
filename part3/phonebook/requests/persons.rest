@@ -36,6 +36,15 @@ Content-Type: application/json
     "name": "ab"
 }
 
+### POST a person with an invalid number
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "number": "12343242",
+    "name": "good name"
+}
+
 ### POST a person without a number
 POST http://localhost:3001/api/persons
 Content-Type: application/json
@@ -58,3 +67,11 @@ DELETE  http://localhost:3001/api/persons/69a7e5eea86163bba95cd76a
 
 ### GET unknown endpoint
 GET http://localhost:3001/api/foo
+
+### UPDATE a user with an invalid type
+PUT http://localhost:3001/api/persons/69a7fb972e347a07ff3929db
+Content-Type: application/json
+
+{
+    "number": "123458389"
+}
