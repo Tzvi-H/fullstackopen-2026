@@ -1,0 +1,13 @@
+### GET all blogs
+GET http://localhost:3003/api/blogs
+
+### CREATE a blog
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "css tricks",
+    "author": "john ludpow",
+    "url": "cool-css.com",
+    "likes": 0
+}
