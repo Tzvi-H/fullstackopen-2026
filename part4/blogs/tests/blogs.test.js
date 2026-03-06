@@ -24,3 +24,20 @@ describe("total likes", () => {
     assert.strictEqual(result, 36);
   });
 });
+
+describe("favoriteBlog", () => {
+  test("returns blog with most likes", () => {
+    const result = listHelper.favoriteBlog(blogs);
+    assert.strictEqual(result, blogs[2]);
+  });
+});
+
+describe("mostBlogs", () => {
+  test("returns author with most blogs", () => {
+    const result = listHelper.mostBlogs(blogs);
+    assert.deepStrictEqual(result, {
+      author: "Robert C. Martin",
+      blogs: 3,
+    });
+  });
+});
