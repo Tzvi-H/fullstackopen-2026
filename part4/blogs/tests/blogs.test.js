@@ -31,6 +31,29 @@ describe("GET /api/blogs", () => {
   });
 });
 
+describe.only("POST /api/blogs", () => {
+  test("creates a new blog", async () => {
+    const newBlog = {
+      title: "temp blog from test",
+      author: "temp author from test",
+      url: "temp author from test",
+      likes: 1000,
+    };
+
+    const result = await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
+
+    const blogsInDb = await api.get("/api/blogs");
+    const titles = blogsInDb.body.map((b) => b.title);
+
+    assert.strictEqual(blogsInDb.body.length, initialBlogs.length + 1);
+    assert(titles.includes(newBlog.title));
+  });
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
