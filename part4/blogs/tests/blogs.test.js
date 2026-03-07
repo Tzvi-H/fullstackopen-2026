@@ -31,7 +31,7 @@ describe("GET /api/blogs", () => {
   });
 });
 
-describe.only("POST /api/blogs", () => {
+describe("POST /api/blogs", () => {
   test("creates a new blog", async () => {
     const newBlog = {
       title: "temp blog from test",
@@ -51,6 +51,22 @@ describe.only("POST /api/blogs", () => {
 
     assert.strictEqual(blogsInDb.body.length, initialBlogs.length + 1);
     assert(titles.includes(newBlog.title));
+  });
+
+  test.only("without sending a like property, will default to 0", async () => {
+    const newBlog = {
+      title: "temp blog from test",
+      author: "temp author from test",
+      url: "temp author from test",
+    };
+
+    const result = await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
+
+    assert.strictEqual(result.body.likes, 0);
   });
 });
 
