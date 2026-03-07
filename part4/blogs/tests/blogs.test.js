@@ -53,7 +53,7 @@ describe("POST /api/blogs", () => {
     assert(titles.includes(newBlog.title));
   });
 
-  test.only("without sending a like property, will default to 0", async () => {
+  test("without sending a like property, will default to 0", async () => {
     const newBlog = {
       title: "temp blog from test",
       author: "temp author from test",
@@ -67,6 +67,32 @@ describe("POST /api/blogs", () => {
       .expect("Content-Type", /application\/json/);
 
     assert.strictEqual(result.body.likes, 0);
+  });
+
+  test("without a title, results in 400 status code", async () => {
+    const newBlog = {
+      author: "temp author from test",
+      url: "temp author from test",
+      votes: 20,
+    };
+
+    await api.post("/api/blogs").send(newBlog).expect(400);
+
+    const blogsInDb = await api.get("/api/blogs");
+    assert.deepEqual(blogsInDb.body.length, initialBlogs.length);
+  });
+
+  test.only("without a url, results in 400 status code", async () => {
+    const newBlog = {
+      author: "temp author from test",
+      title: "temp blog from test",
+      votes: 20,
+    };
+
+    await api.post("/api/blogs").send(newBlog).expect(400);
+
+    const blogsInDb = await api.get("/api/blogs");
+    assert.deepEqual(blogsInDb.body.length, initialBlogs.length);
   });
 });
 
