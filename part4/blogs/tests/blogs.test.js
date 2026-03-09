@@ -106,6 +106,18 @@ describe("DELETE /api/blogs/:id", () => {
   });
 });
 
+describe("PUT /api/blogs/:id", () => {
+  test("will successfully update a blog with the number of likes", async () => {
+    const result = await api.get("/api/blogs");
+    const firstBlog = result.body[0];
+    await api
+      .put(`/api/blogs/${firstBlog.id}`)
+      .send({ likes: 1234 })
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+  });
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
