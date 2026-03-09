@@ -82,7 +82,7 @@ describe("POST /api/blogs", () => {
     assert.deepEqual(blogsInDb.body.length, initialBlogs.length);
   });
 
-  test.only("without a url, results in 400 status code", async () => {
+  test("without a url, results in 400 status code", async () => {
     const newBlog = {
       author: "temp author from test",
       title: "temp blog from test",
@@ -93,6 +93,16 @@ describe("POST /api/blogs", () => {
 
     const blogsInDb = await api.get("/api/blogs");
     assert.deepEqual(blogsInDb.body.length, initialBlogs.length);
+  });
+});
+
+describe("DELETE /api/blogs/:id", () => {
+  test("will successfully delete the blog", async () => {
+    const result = await api.get("/api/blogs");
+    const firstBlog = result.body[0];
+    await api.delete(`/api/blogs/${firstBlog.id}`).expect(204);
+    const blogsInDb = await api.get("/api/blogs");
+    assert.deepEqual(blogsInDb.body.length, initialBlogs.length - 1);
   });
 });
 
