@@ -4,13 +4,17 @@ const supertest = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app");
 const initialBlogs = require("./blogs_data");
+const initialUsers = require("./users_data");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const api = supertest(app);
 
 beforeEach(async () => {
   await Blog.deleteMany();
   await Blog.insertMany(initialBlogs);
+  await User.deleteMany();
+  await User.insertMany(initialUsers);
 });
 
 describe("GET /api/blogs", () => {
@@ -115,6 +119,55 @@ describe("PUT /api/blogs/:id", () => {
       .send({ likes: 1234 })
       .expect(200)
       .expect("Content-Type", /application\/json/);
+  });
+});
+
+describe.only("POST /api/users", () => {
+  test("will return proper response for missing username", async () => {
+    const user = {
+      name: "name a",
+      password: "123456",
+    };
+    const result = await api.post("/api/users").send(user).expect(400);
+
+    assert(result.body.error.includes("Path `username` is required"));
+
+    const usersInDb = await api.get("/api/users");
+    assert.strictEqual(usersInDb.body.length, initialUsers.length);
+  });
+
+  test("will return proper response for too short username", async () => {
+    const user = {
+      name: "name a",
+      password: "123456",
+      username: "ab",
+    };
+    const result = await api.post("/api/users").send(user).expect(400);
+
+    assert(
+      result.body.error.includes(
+        "(`ab`, length 2) is shorter than the minimum allowed length (3)",
+      ),
+    );
+
+    const usersInDb = await api.get("/api/users");
+    assert.strictEqual(usersInDb.body.length, initialUsers.length);
+  });
+
+  test("will return proper response for invalid password", async () => {
+    const user = {
+      name: "name a",
+      password: "12",
+      username: "username a",
+    };
+    const result = await api.post("/api/users").send(user).expect(400);
+
+    assert(
+      result.body.error.includes("password must have at least 3 characters"),
+    );
+
+    const usersInDb = await api.get("/api/users");
+    assert.strictEqual(usersInDb.body.length, initialUsers.length);
   });
 });
 

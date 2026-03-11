@@ -10,3 +10,13 @@ Content-Type: application/json
     "password": "123456",
     "username": "cool beenz"
 }
+
+### POST a an invalid user
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "name": "vscode 2",
+    "password": "123",
+    "username": "ab"
+}
