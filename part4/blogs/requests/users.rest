@@ -6,9 +6,9 @@ POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-    "name": "vscode",
+    "name": "name 3",
     "password": "123456",
-    "username": "cool beenz"
+    "username": "username 3"
 }
 
 ### POST a an invalid user

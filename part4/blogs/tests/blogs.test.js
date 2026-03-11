@@ -122,7 +122,7 @@ describe("PUT /api/blogs/:id", () => {
   });
 });
 
-describe.only("POST /api/users", () => {
+describe("POST /api/users", () => {
   test("will return proper response for missing username", async () => {
     const user = {
       name: "name a",
