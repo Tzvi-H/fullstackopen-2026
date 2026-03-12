@@ -21,6 +21,10 @@ blogsRouter.post("/", tokenExtractor, async (request, response, next) => {
   }
 
   const user = await User.findById(decodedToken.id);
+  if (!user) {
+    return response.status(400).json({ error: "UserId missing or not valid" });
+  }
+
   const blog = new Blog(request.body);
   blog.user = user._id;
 
@@ -45,13 +49,26 @@ blogsRouter.put("/:id", async (req, res, next) => {
   }
 });
 
-blogsRouter.delete("/:id", async (request, response, next) => {
-  try {
-    await Blog.findByIdAndDelete(request.params.id);
-    response.status(204).end();
-  } catch (e) {
-    next(e);
+blogsRouter.delete("/:id", tokenExtractor, async (request, response, next) => {
+  const decodedToken = jwt.verify(request.token, SECRET);
+
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token invalid" });
   }
+
+  const blog = await Blog.findById(request.params.id);
+  if (!blog) {
+    return response.status(400).json({ error: "blogId missing or not valid" });
+  }
+
+  if (blog.user.toString() !== decodedToken.id) {
+    return response
+      .status(403)
+      .json({ error: "only the creator can delete a blog" });
+  }
+
+  await blog.deleteOne();
+  response.status(204).end();
 });
 
 module.exports = blogsRouter;
