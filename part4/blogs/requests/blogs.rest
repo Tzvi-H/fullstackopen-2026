@@ -4,6 +4,7 @@ GET http://localhost:3003/api/blogs
 ### CREATE a blog
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIDMiLCJpZCI6IjY5YjE1MzEwMmQ2MDY5MGIxMzMwOTBlOCIsImlhdCI6MTc3MzMxMTU5Nn0.i5kJEBzQjn2XIg4zDOjHcKgWya1w1uzZCOkRrKdTC0M
 
 {
     "title": "css tricks",
@@ -21,4 +22,4 @@ Content-Type: application/json
 }
 
 ### DELETE a blog
-DELETE http://localhost:3003/api/blogs/69a96a92cdd96ed936b3
+DELETE http://localhost:3003/api/blogs/69b153212d60690b133090ec
