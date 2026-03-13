@@ -1,6 +1,9 @@
 ### GET all blogs
 GET http://localhost:3003/api/blogs
 
+### GET 1 blogs
+GET http://localhost:3003/api/blogs/69b3ee6b0f264f50643235a6
+
 ### CREATE a blog
 POST http://localhost:3003/api/blogs
 Content-Type: application/json

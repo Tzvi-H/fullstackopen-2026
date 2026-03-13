@@ -12,9 +12,17 @@ const api = supertest(app);
 
 beforeEach(async () => {
   await Blog.deleteMany();
-  await Blog.insertMany(initialBlogs);
   await User.deleteMany();
-  await User.insertMany(initialUsers);
+  await Promise.all(
+    initialUsers.map((user) =>
+      api.post("/api/users").send({
+        username: user.username,
+        password: user.password,
+        name: user.name,
+      }),
+    ),
+  );
+  await Blog.insertMany(initialBlogs);
 });
 
 describe("GET /api/blogs", () => {
@@ -36,6 +44,29 @@ describe("GET /api/blogs", () => {
 });
 
 describe("POST /api/blogs", () => {
+  let authorization;
+  const { username, password } = initialUsers[0];
+  const loginInfo = { username, password };
+
+  beforeEach(async () => {
+    const result = await api.post("/api/login").send(loginInfo);
+    authorization = "Bearer " + result.body.token;
+  });
+
+  test("fails with a 401 if token not provided", async () => {
+    const newBlog = {
+      title: "temp blog from test",
+      author: "temp author from test",
+      url: "temp author from test",
+      likes: 1000,
+    };
+
+    await api.post("/api/blogs").send(newBlog).expect(401);
+
+    const blogsInDb = await api.get("/api/blogs");
+    assert.deepEqual(blogsInDb.body.length, initialBlogs.length);
+  });
+
   test("creates a new blog", async () => {
     const newBlog = {
       title: "temp blog from test",
@@ -44,9 +75,10 @@ describe("POST /api/blogs", () => {
       likes: 1000,
     };
 
-    const result = await api
+    await api
       .post("/api/blogs")
       .send(newBlog)
+      .set({ Authorization: authorization })
       .expect(201)
       .expect("Content-Type", /application\/json/);
 
@@ -67,6 +99,7 @@ describe("POST /api/blogs", () => {
     const result = await api
       .post("/api/blogs")
       .send(newBlog)
+      .set({ Authorization: authorization })
       .expect(201)
       .expect("Content-Type", /application\/json/);
 
@@ -80,7 +113,11 @@ describe("POST /api/blogs", () => {
       votes: 20,
     };
 
-    await api.post("/api/blogs").send(newBlog).expect(400);
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .set({ Authorization: authorization })
+      .expect(400);
 
     const blogsInDb = await api.get("/api/blogs");
     assert.deepEqual(blogsInDb.body.length, initialBlogs.length);
@@ -93,7 +130,11 @@ describe("POST /api/blogs", () => {
       votes: 20,
     };
 
-    await api.post("/api/blogs").send(newBlog).expect(400);
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .set({ Authorization: authorization })
+      .expect(400);
 
     const blogsInDb = await api.get("/api/blogs");
     assert.deepEqual(blogsInDb.body.length, initialBlogs.length);
@@ -101,12 +142,37 @@ describe("POST /api/blogs", () => {
 });
 
 describe("DELETE /api/blogs/:id", () => {
+  let authorization;
+  const { username, password } = initialUsers[0];
+  const loginInfo = { username, password };
+
+  beforeEach(async () => {
+    const result = await api.post("/api/login").send(loginInfo);
+    authorization = "Bearer " + result.body.token;
+  });
+
   test("will successfully delete the blog", async () => {
-    const result = await api.get("/api/blogs");
-    const firstBlog = result.body[0];
-    await api.delete(`/api/blogs/${firstBlog.id}`).expect(204);
-    const blogsInDb = await api.get("/api/blogs");
-    assert.deepEqual(blogsInDb.body.length, initialBlogs.length - 1);
+    const newBlog = {
+      title: "temp blog from test",
+      author: "temp author from test",
+      url: "temp author from test",
+      likes: 1000,
+    };
+
+    const result = await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .set({ Authorization: authorization });
+    const blogsInDb1 = await api.get("/api/blogs");
+    assert.deepEqual(blogsInDb1.body.length, initialBlogs.length + 1);
+    const savedBlog = result.body;
+
+    await api
+      .delete(`/api/blogs/${savedBlog.id}`)
+      .set({ Authorization: authorization })
+      .expect(204);
+    const blogsInDb2 = await api.get("/api/blogs");
+    assert.deepEqual(blogsInDb2.body.length, initialBlogs.length);
   });
 });
 
