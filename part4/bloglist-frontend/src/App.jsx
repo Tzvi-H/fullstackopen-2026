@@ -7,6 +7,9 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -17,6 +20,7 @@ const App = () => {
     const user = window.localStorage.getItem("loggedBlogappUser");
     if (user) {
       setUser(JSON.parse(user));
+      blogService.setToken(user.token);
     }
   }, []);
 
@@ -25,6 +29,7 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password });
       setUser(user);
+      blogService.setToken(user.token);
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
       setUsername("");
       setPassword("");
@@ -35,6 +40,7 @@ const App = () => {
 
   const handleLogout = () => {
     setUser(null);
+    blogService.setToken(null);
     window.localStorage.removeItem("loggedBlogappUser");
   };
 
@@ -66,6 +72,41 @@ const App = () => {
     </form>
   );
 
+  const handleCreate = async (e) => {
+    e.preventDefault();
+
+    try {
+      const savedBlog = await blogService.create({ title, author, url });
+      setBlogs(blogs.concat(savedBlog));
+      setTitle("");
+      setAuthor("");
+      setUrl("");
+    } catch (e) {
+      console.error("fail", e);
+    }
+  };
+
+  const createForm = () => (
+    <form onSubmit={handleCreate}>
+      <label>
+        title:
+        <input value={title} onChange={(e) => setTitle(e.target.value)} />
+        <br />
+      </label>
+      <label>
+        author:
+        <input value={author} onChange={(e) => setAuthor(e.target.value)} />
+        <br />
+      </label>
+      <label>
+        url:
+        <input value={url} onChange={(e) => setUrl(e.target.value)} />
+      </label>
+      <br />
+      <button type="submit">create</button>
+    </form>
+  );
+
   if (user === null) {
     return (
       <div>
@@ -81,6 +122,10 @@ const App = () => {
       <p>
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
+      <div>
+        <h2>create new</h2>
+        {createForm()}
+      </div>
       {blogsElement()}
     </div>
   );
