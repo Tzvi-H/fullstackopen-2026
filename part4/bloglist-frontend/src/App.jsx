@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
+import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import "./App.css";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -11,6 +13,7 @@ const App = () => {
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
   const [user, setUser] = useState(null);
+  const [notificationMessage, setNotificationMessage] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -33,8 +36,12 @@ const App = () => {
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
       setUsername("");
       setPassword("");
-    } catch (e) {
-      console.error("fail", e);
+    } catch {
+      setNotificationMessage({
+        type: "error",
+        text: "wrong username or password",
+      });
+      setTimeout(() => setNotificationMessage(null), 2500);
     }
   };
 
@@ -81,6 +88,11 @@ const App = () => {
       setTitle("");
       setAuthor("");
       setUrl("");
+      setNotificationMessage({
+        type: "success",
+        text: `a new blog '${title}' by ${author} added`,
+      });
+      setTimeout(() => setNotificationMessage(null), 2500);
     } catch (e) {
       console.error("fail", e);
     }
@@ -111,6 +123,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
+        <Notification message={notificationMessage} />
         {loginForm()}
       </div>
     );
@@ -119,6 +132,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={notificationMessage} />
       <p>
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>

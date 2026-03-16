@@ -1,0 +1,21 @@
+.error {
+  padding: 8px;
+  color: red;
+  border: 3px red solid;
+  border-radius: 6px;
+  margin: 10px 0;
+  font-weight: bolder;
+  background-color: lightgray;
+  font-size: larger;
+}
+
+.success {
+  padding: 8px;
+  color: green;
+  border: 3px green solid;
+  border-radius: 6px;
+  margin: 10px 0;
+  font-weight: bolder;
+  background-color: lightgray;
+  font-size: larger;
+}
