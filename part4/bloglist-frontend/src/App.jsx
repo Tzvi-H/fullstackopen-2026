@@ -55,7 +55,7 @@ const App = () => {
   const blogsElement = () => (
     <div>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       ))}
     </div>
   );
@@ -93,6 +93,11 @@ const App = () => {
     } catch (e) {
       console.error("fail", e);
     }
+  };
+
+  const updateBlog = async (newBlog) => {
+    const savedBlog = await blogService.update(newBlog);
+    setBlogs(blogs.map((b) => (b.id !== savedBlog.id ? b : savedBlog)));
   };
 
   const createForm = () => (
