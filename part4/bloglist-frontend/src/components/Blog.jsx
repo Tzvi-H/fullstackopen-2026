@@ -21,7 +21,7 @@ const Blog = ({ blog, updateBlog }) => {
 
   return (
     <div style={blogStyle}>
-      {blog.title}
+      {blog.title} {blog.author}
       <button onClick={handleClick}>{buttonText}</button>
       {showDetails && (
         <div>
@@ -30,7 +30,7 @@ const Blog = ({ blog, updateBlog }) => {
           likes {blog.likes}
           <button onClick={handleLike}>like</button>
           <br />
-          {blog.author}
+          {blog.user.name}
         </div>
       )}
     </div>

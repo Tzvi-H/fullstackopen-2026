@@ -43,6 +43,7 @@ blogsRouter.put("/:id", async (req, res, next) => {
     const blog = await Blog.findById(req.params.id);
     blog.likes = req.body.likes;
     await blog.save();
+    await blog.populate("user");
     res.json(blog);
   } catch (e) {
     next(e);
