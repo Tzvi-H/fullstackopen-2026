@@ -52,13 +52,16 @@ const App = () => {
     window.localStorage.removeItem("loggedBlogappUser");
   };
 
-  const blogsElement = () => (
-    <div>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
-      ))}
-    </div>
-  );
+  const blogsElement = () => {
+    const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
+    return (
+      <div>
+        {sortedBlogs.map((blog) => (
+          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+        ))}
+      </div>
+    );
+  };
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
