@@ -53,11 +53,17 @@ const App = () => {
   };
 
   const blogsElement = () => {
-    const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
+    const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
     return (
       <div>
         {sortedBlogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateBlog={updateBlog}
+            isCreator={user.username === blog.user.username}
+            removeBlog={removeBlog}
+          />
         ))}
       </div>
     );
@@ -101,6 +107,16 @@ const App = () => {
   const updateBlog = async (newBlog) => {
     const savedBlog = await blogService.update(newBlog);
     setBlogs(blogs.map((b) => (b.id !== savedBlog.id ? b : savedBlog)));
+  };
+
+  const removeBlog = async ({ id, title }) => {
+    await blogService.remove(id);
+    setBlogs(blogs.filter((blog) => blog.id !== id));
+    setNotificationMessage({
+      type: "success",
+      text: `blog '${title}' removed`,
+    });
+    setTimeout(() => setNotificationMessage(null), 2500);
   };
 
   const createForm = () => (
