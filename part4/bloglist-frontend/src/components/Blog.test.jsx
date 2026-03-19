@@ -37,3 +37,26 @@ describe("Blog", () => {
     expect(urlElement).toBeInTheDocument();
   });
 });
+
+test("when a user clicks the like button twice, the handler is called twice", async () => {
+  const blog = {
+    title: "test title",
+    author: "test author",
+    url: "test url",
+    likes: 0,
+    user: { name: "john doe", username: "john90best" },
+  };
+  const mockHandler = vi.fn();
+
+  render(<Blog blog={blog} updateBlog={mockHandler} />);
+
+  const user = userEvent.setup();
+  const button = screen.getByText("view");
+  await user.click(button);
+
+  const likeButton = screen.getByText("like");
+  await user.click(likeButton);
+  await user.click(likeButton);
+
+  expect(mockHandler.mock.calls).toHaveLength(2);
+});
