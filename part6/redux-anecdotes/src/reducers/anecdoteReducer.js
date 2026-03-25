@@ -26,10 +26,17 @@ export const voteFor = (id) => {
   };
 };
 
+export const createAnecdote = (content) => {
+  return {
+    type: "CREATE_ANECDOTE",
+    payload: { content },
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case "NEW_ANECDOTE": {
-      return [...state, asObject(action.payload)];
+    case "CREATE_ANECDOTE": {
+      return [...state, asObject(action.payload.content)];
     }
     case "VOTE_ANECDOTE": {
       const anecdote = state.find((a) => a.id === action.payload.id);
