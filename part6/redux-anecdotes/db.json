@@ -32,13 +32,23 @@
     },
     {
       "content": "hmmm",
-      "votes": 0,
+      "votes": 1,
       "id": "E1TSeS475Xw"
     },
     {
       "content": "yoooo",
-      "votes": 2,
+      "votes": 3,
       "id": "Dp4B5qCY85w"
+    },
+    {
+      "content": "hello",
+      "votes": 0,
+      "id": "mk7umSqT6IY"
+    },
+    {
+      "content": "dfsfsdfs",
+      "votes": 0,
+      "id": "DMwzXoRg_ow"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
