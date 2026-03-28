@@ -1,11 +1,24 @@
-import { useQuery } from '@tanstack/react-query'
-import { getAnecdotes } from './services/anecdotes'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { getAnecdotes, updateAnecdote } from './services/anecdotes'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 
 const App = () => {
+  const queryClient = useQueryClient()
+
+  const newMutation = useMutation({
+    mutationFn: updateAnecdote,
+    onSuccess: (updatedAnecdote) => {
+      const anecdotes = queryClient.getQueryData(['anecdotes'])
+      const updatedAnecdotes = anecdotes.map((a) =>
+        a.id !== updatedAnecdote.id ? a : updatedAnecdote,
+      )
+      queryClient.setQueryData(['anecdotes'], updatedAnecdotes)
+    },
+  })
+
   const handleVote = (anecdote) => {
-    console.log('vote')
+    newMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 })
   }
 
   const result = useQuery({
