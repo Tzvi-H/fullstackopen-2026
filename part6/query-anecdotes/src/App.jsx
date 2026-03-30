@@ -17,21 +17,22 @@ const App = () => {
         a.id !== updatedAnecdote.id ? a : updatedAnecdote,
       )
       queryClient.setQueryData(['anecdotes'], updatedAnecdotes)
+      notificationDispatch({
+        type: 'SET',
+        payload: `anecdote '${updatedAnecdote.content}' voted`,
+      })
+      setTimeout(() => notificationDispatch({ type: 'RESET' }), 4000)
     },
   })
 
   const handleVote = (anecdote) => {
     newMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 })
-    notificationDispatch({
-      type: 'SET',
-      payload: `anecdote '${anecdote.content}' voted`,
-    })
-    setTimeout(() => notificationDispatch({ type: 'RESET' }), 4000)
   }
 
   const result = useQuery({
     queryKey: ['anecdotes'],
     queryFn: getAnecdotes,
+    refetchOnWindowFocus: false,
     retry: 1,
   })
 
